@@ -1,0 +1,10 @@
+openai_api_key: 
+TOGETHER_API_KEY: 
+use_together: true  # If true, we call Together. If false, we call OpenAI.
+
+agents:
+  pdf2latex:
+    default_model: "gpt-3.5-turbo"   # For OpenAI
+    system_prompt: "You are a helpful assistant specialized in reading LaTeX documents."
+    user_prompt: "Can you summarize this PDF for me?"
+    together_model: "meta-llama/Llama-3.3-70B-Instruct-Turbo"  # For Together
