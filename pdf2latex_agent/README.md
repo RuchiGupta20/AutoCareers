@@ -16,5 +16,14 @@ poetry install
 
 ## Usage :
 
-poetry run pdf2latex-agent /path/to/yourfile.pdf
+# Process a PDF and generate LaTeX
+poetry run pdf2latex-agent process resume.pdf
 
+# Generate a cover letter
+poetry run pdf2latex-agent cover-letter resume.pdf --job-description "Software Engineer role at Google"
+
+# Calculate ATS score
+poetry run pdf2latex-agent ats-score resume.pdf
+
+# Generate resume feedback
+poetry run pdf2latex-agent feedback resume.pdf --job-description "job_description.txt"
