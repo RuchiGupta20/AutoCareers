@@ -1,0 +1,26 @@
+Job Title: Software Engineer
+Company: Google
+Location: Mountain View, CA
+
+Job Description:
+We are looking for a Software Engineer to join our team at Google. The ideal candidate will have a strong background in computer science, with experience in software development, algorithms, and data structures. Key responsibilities include:
+
+- Designing, developing, and maintaining scalable software solutions.
+- Collaborating with cross-functional teams to deliver high-quality products.
+- Writing clean, efficient, and well-documented code.
+- Optimizing existing systems for performance and scalability.
+- Participating in code reviews and providing constructive feedback.
+
+Requirements:
+- Bachelor's degree in Computer Science or a related field.
+- 3+ years of experience in software development.
+- Proficiency in programming languages such as Python, Java, or C++.
+- Strong understanding of algorithms and data structures.
+- Experience with cloud technologies (e.g., AWS, GCP) is a plus.
+- Excellent problem-solving and communication skills.
+
+Preferred Qualifications:
+- Master's degree in Computer Science or a related field.
+- Experience with machine learning or data science.
+- Familiarity with DevOps practices and tools.
+- Knowledge of distributed systems and microservices architecture.
