@@ -1,9 +1,6 @@
 import openai
-from pathlib import Path
 
 from llama_index.llms.together import TogetherLLM
-
-CONFIG_PATH = Path(__file__).parent / "config.yaml"
 
 def feed_latex_to_llm(latex_content: str,config_data: str) -> str:
     """
