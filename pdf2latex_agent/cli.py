@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 from .factory import AgentFactory
 from .pdf_converter import pdf_to_text
+from .job_scrapper import JobScrapper
 
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
 
@@ -41,6 +42,9 @@ def main():
     feedback_parser = subparsers.add_parser("feedback", help="Generate resume feedback")
     feedback_parser.add_argument("pdf_path", help="Path to the PDF file (resume)")
     feedback_parser.add_argument("--job-description", help="Job description or path to a .txt file", required=True)
+
+    # Subcommand for scraping jobs
+    scrape_jobs_parser = subparsers.add_parser("scrape-jobs", help="Scrape Jobs")
 
     # Parse the arguments
     args = parser.parse_args()
@@ -78,6 +82,10 @@ def main():
         feedback = agent.generate_resume_feedback(resume_content, job_description, config_data)  # Pass config_data
         print("Resume Feedback:\n")
         print(feedback)
+    elif args.command == "scrape-jobs":
+        jobs = JobScrapper().scrapeJobs()
+        for job in jobs:
+            print(job)
     else:
         # If no subcommand is provided, print help
         parser.print_help()

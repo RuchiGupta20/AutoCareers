@@ -27,3 +27,6 @@ poetry run pdf2latex-agent ats-score resume.pdf
 
 # Generate resume feedback
 poetry run pdf2latex-agent feedback resume.pdf --job-description "job_description.txt"
+
+# Scrape jobs
+poetry run pdf2latex-agent scrape-jobs
