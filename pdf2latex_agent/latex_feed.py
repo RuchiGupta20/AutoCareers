@@ -1,6 +1,5 @@
 # pdf2latex_agent/latex_feed.py
 
-import openai
 from pathlib import Path
 from llama_index.llms.together import TogetherLLM
 
