@@ -17,10 +17,12 @@ together = "^1.4.6"
 PyYAML = "^6.0"
 pypdf = "^5.1.0"  
 llama-index-llms-together = "^0.3.1"
+
 pymongo = {extras = ["srv"], version = "^4.11.3"}
 pinecone = "^6.0.2"
 fastapi = "^0.115.11"
 uvicorn = "^0.34.0"
+selenium = "^4.30.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
