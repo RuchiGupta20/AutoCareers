@@ -1,10 +1,10 @@
 use_mongo: true 
 
 MongoDB:
-    MONGO_URI: "mongodb+srv://520_user:gQpENe4xRiKWvuMr@cluster0.uxci1.mongodb.net/mydatabase?retryWrites=true&w=majority"
+    MONGO_URI: "URL"
 
 Pinecone:
-  API_KEY: "pcsk_6hF4cV_HqmZmV75VbcAr9xrD5kfZVYkfMdy8oC9FieS2KJ5imhi9v81PG7a92CvLihc6T4"
+  API_KEY: "API_KEY"
   ENVIRONMENT: "preview"   # or "production" etc. (whatever your account needs)
   CLOUD: "aws"             # or "gcp" / "azure"
   REGION: "us-west1"       # or your actual region, e.g. "us-east1", "us-central1"
