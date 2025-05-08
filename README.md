@@ -47,9 +47,13 @@ Traditional job search platforms often suffer from information overload, ineffic
 
 ### **Messaging System**
 - Direct messaging between job seekers and recruiters for interviews, follow-ups, and inquiries.
+- Real-time communication using WebSockets
+- MongoDB-based storage for conversations and messages
+- Message read status tracking and typing indicators
+- Conversation management with user presence status
 
 ### **Automatic Cover Letter Generation**
-- AI-based cover letter creation tailored to each job description, incorporating details from the user’s profile and resume.
+- AI-based cover letter creation tailored to each job description, incorporating details from the user's profile and resume.
 
 ### **Security and Data Protection**
 - Ensuring secure handling of user data, protected access, and privacy measures to safeguard sensitive information.

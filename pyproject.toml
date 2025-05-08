@@ -7,7 +7,8 @@ packages = [
   { include = "pdf2latex_agent" },
   { include = "job_recommendation_engine" },
   { include = "DB_Connectors" },
-   { include = "common" }
+  { include = "common" },
+  { include = "messages" }
 ]
 
 [tool.poetry.dependencies]
@@ -33,6 +34,9 @@ job-scraper = "job_recommendation_engine.push_to_mongodb:main"
 DB-connect= "DB_Connectors.db_connection:main"
 mongo-to-pinecone = "job_recommendation_engine.upsert_to_pinecone:main"
 recommend-jobs = "job_recommendation_engine.recommend_jobs:main"
+
+[tool.poetry.group.dev.dependencies]
+mongomock = "^4.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.5.0"]

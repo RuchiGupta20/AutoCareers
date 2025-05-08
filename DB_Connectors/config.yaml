@@ -1,0 +1,9 @@
+MongoDB:
+  # For local development using MongoDB running locally
+  MONGO_URI: "mongodb://localhost:27017/"
+
+Pinecone:
+  API_KEY: "YOUR_PINECONE_API_KEY"
+  ENVIRONMENT: "YOUR_PINECONE_ENVIRONMENT"
+  CLOUD: "aws"
+  REGION: "us-west1" 
