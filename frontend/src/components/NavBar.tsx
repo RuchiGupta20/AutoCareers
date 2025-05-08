@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
-// Example menu items for the side drawer
-const navItems = ['Job Type', 'Experience Level', 'Salary Range', 'Location'];
+// Updated menu items for the side drawer
+const navItems = ['Job Board', 'Resume Review', 'Message Board', 'Log out'];
 
 const NavBar: React.FC = () => {
   // State to manage whether the drawer is open
@@ -47,13 +47,14 @@ const NavBar: React.FC = () => {
 
   return (
     <>
-      {/* Transparent, floating navbar */}
+      {/* Solid navbar with fixed position */}
       <AppBar
         position="fixed"
-        elevation={0}
+        elevation={4}
         sx={{
-          backgroundColor: 'transparent', // Transparent background
-          color: '#333',                  // Dark text/icons
+          backgroundColor: '#fff', 
+          color: '#333',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
         <Toolbar sx={{ minHeight: 64, px: 2 }}>
@@ -67,13 +68,18 @@ const NavBar: React.FC = () => {
             <MenuIcon />
           </IconButton>
 
-          {/* Brand Icon (replace src with your logo) */}
+          {/* AutoCareers Logo */}
           <Box
             component="img"
-            src="/path/to/brand-icon.png"
-            alt="Brand Icon"
-            sx={{ width: 32, height: 32, mr: 1 }}
+            src="/autocareer_logo.png"
+            alt="AutoCareers Logo"
+            sx={{ height: 36, mr: 2 }}
           />
+          
+          {/* Message Board Title */}
+          <Typography variant="h6" component="div" sx={{ fontWeight: 500 }}>
+            Message Board
+          </Typography>
         </Toolbar>
       </AppBar>
 
@@ -83,16 +89,14 @@ const NavBar: React.FC = () => {
         open={drawerOpen}
         onClose={handleDrawerToggle}
         sx={{
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 250 },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 250, marginTop: '64px' },
         }}
       >
         {drawerContent}
       </Drawer>
 
-      {/* Example main content to illustrate the floating navbar effect */}
-      <Box sx={{ mt: 8, p: 2 }}>
-        
-      </Box>
+      {/* Extra toolbar to push content below the fixed AppBar */}
+      <Toolbar />
     </>
   );
 };

@@ -1,28 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Navbar from './components/NavBar';
-import FilterSearchBar from './components/FilterBar'
+import MessageBoard from './components/messaging/MessageBoard';
 
 function App() {
+  // Sample current user
+  const currentUser = {
+    id: 4, // This would be fetched from authentication system
+    name: 'You',
+    type: 'applicant' as 'recruiter' | 'applicant',
+  };
+
   return (
     <div className="App">
       <Navbar />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      
+      <div className="content">
+        <MessageBoard currentUser={currentUser} />
+      </div>
     </div>
   );
 }
