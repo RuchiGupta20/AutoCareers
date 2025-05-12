@@ -11,48 +11,35 @@ from ..schemas import (
 )
 from ..services.message_service import message_service
 from ..utils.websocket_manager import manager
+from ..utils.api_mappers import (
+    map_message_to_frontend,
+    map_conversation_to_frontend,
+    map_user_to_frontend,
+    serialize_mongodb_doc
+)
+from ..models.database import get_users_collection
 
 router = APIRouter()
-
-# Helper function to convert MongoDB ObjectId to string
-def serialize_mongodb_doc(doc: Dict[str, Any]) -> Dict[str, Any]:
-    """Convert MongoDB document to a serializable dictionary"""
-    if doc is None:
-        return None
-    
-    result = dict(doc)
-    if "_id" in result:
-        result["id"] = str(result["_id"])
-        del result["_id"]
-    
-    # Convert datetime objects to string
-    for key, value in result.items():
-        if isinstance(value, datetime):
-            result[key] = value.isoformat()
-        elif isinstance(value, ObjectId):
-            result[key] = str(value)
-    
-    return result
 
 @router.post("/messages/", response_model=MessageResponse)
 async def create_message(message: MessageCreate):
     """Create a new message"""
     db_message = message_service.create_message(message)
     
-    # Serialize message for WebSocket
-    serialized_message = serialize_mongodb_doc(db_message)
+    # Map to frontend format
+    frontend_message = map_message_to_frontend(db_message)
     
     # Notify via WebSockets
     await manager.broadcast_to_conversation(
         {
             "type": "new_message",
-            "message": serialized_message
+            "message": frontend_message
         },
         message.conversation_id,
         exclude_user_id=message.sender_id
     )
     
-    return serialized_message
+    return frontend_message
 
 @router.get("/messages/{message_id}", response_model=MessageResponse)
 async def get_message(message_id: str):
@@ -60,7 +47,7 @@ async def get_message(message_id: str):
     message = message_service.get_message(message_id)
     if not message:
         raise HTTPException(status_code=404, detail="Message not found")
-    return serialize_mongodb_doc(message)
+    return map_message_to_frontend(message)
 
 @router.put("/messages/{message_id}/read", response_model=dict)
 async def mark_message_as_read(message_id: str):
@@ -78,7 +65,18 @@ async def mark_conversation_as_read(conversation_id: str, user_id: int):
 async def create_conversation(conversation: ConversationCreate):
     """Create a new conversation"""
     db_conversation = message_service.create_conversation(conversation)
-    return serialize_mongodb_doc(db_conversation)
+    
+    # Get user details for participants
+    users_collection = get_users_collection()
+    user_ids = [p.get("user_id") for p in db_conversation.get("participants", [])]
+    users_map = {}
+    
+    for user_id in user_ids:
+        user = users_collection.find_one({"user_id": user_id})
+        if user:
+            users_map[user_id] = map_user_to_frontend(user)
+    
+    return map_conversation_to_frontend(db_conversation, users_map)
 
 @router.get("/conversations/{conversation_id}", response_model=ConversationDetail)
 async def get_conversation(conversation_id: str):
@@ -87,14 +85,25 @@ async def get_conversation(conversation_id: str):
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
     
-    # Convert to serializable format
-    result = serialize_mongodb_doc(conversation)
-    
-    # Add messages to response
+    # Get messages
     messages = message_service.get_conversation_messages(conversation_id)
-    result["messages"] = [serialize_mongodb_doc(msg) for msg in messages]
     
-    return result
+    # Get user details for participants
+    users_collection = get_users_collection()
+    user_ids = [p.get("user_id") for p in conversation.get("participants", [])]
+    users_map = {}
+    
+    for user_id in user_ids:
+        user = users_collection.find_one({"user_id": user_id})
+        if user:
+            users_map[user_id] = map_user_to_frontend(user)
+    
+    return map_conversation_to_frontend(
+        conversation, 
+        users_map, 
+        include_messages=True, 
+        messages=messages
+    )
 
 @router.get("/conversations/{conversation_id}/messages", response_model=List[MessageResponse])
 async def get_conversation_messages(
@@ -109,14 +118,31 @@ async def get_conversation_messages(
     start = min(offset, len(messages))
     end = min(offset + limit, len(messages))
     
-    # Serialize messages for response
-    return [serialize_mongodb_doc(msg) for msg in messages[start:end]]
+    # Map to frontend format
+    return [map_message_to_frontend(msg) for msg in messages[start:end]]
 
 @router.get("/users/{user_id}/conversations", response_model=List[ConversationResponse])
 async def get_user_conversations(user_id: int):
     """Get all conversations for a user"""
     conversations = message_service.get_user_conversations(user_id)
-    return [serialize_mongodb_doc(conv) for conv in conversations]
+    
+    # Get user details for all participants in all conversations
+    users_collection = get_users_collection()
+    all_user_ids = set()
+    
+    for conv in conversations:
+        for participant in conv.get("participants", []):
+            all_user_ids.add(participant.get("user_id"))
+    
+    # Build user map
+    users_map = {}
+    for user_id in all_user_ids:
+        user = users_collection.find_one({"user_id": user_id})
+        if user:
+            users_map[user_id] = map_user_to_frontend(user)
+    
+    # Map conversations to frontend format
+    return [map_conversation_to_frontend(conv, users_map) for conv in conversations]
 
 @router.get("/users/{user_id}/unread", response_model=Dict[str, int])
 async def get_unread_message_count(user_id: int):

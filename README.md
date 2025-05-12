@@ -1,5 +1,30 @@
 # AutoCareers
 
+## Development Commands for Windows PowerShell
+
+Since Windows PowerShell doesn't support the `&&` operator for command chaining, use these commands instead:
+
+```powershell
+# Start the frontend application
+cd frontend; npm start
+
+# Run tests
+cd frontend; npm test
+
+# Build the application
+cd frontend; npm run build
+```
+
+For multiple commands, use semicolons (`;`) to separate commands in PowerShell.
+
+## Project Structure
+
+- `/frontend` - React frontend application
+  - `/src/components` - UI components
+  - `/src/pages` - Page components
+  - `/src/services` - API and data services
+  - `/src/types` - TypeScript type definitions
+
 ## Project Overview
 AutoCareers is designed to streamline the job search process for job seekers and recruiters by providing an intuitive platform for job listings, applications, and candidate management. The platform offers advanced features such as resume parsing, ATS scoring, filtering and search, recruiter and user-specific views, direct messaging, and job applications. By leveraging modern web technologies, AI-driven resume analysis, and automation, the platform aims to improve hiring efficiency and enhance the job-seeking experience.
 
@@ -47,10 +72,9 @@ Traditional job search platforms often suffer from information overload, ineffic
 
 ### **Messaging System**
 - Direct messaging between job seekers and recruiters for interviews, follow-ups, and inquiries.
-- Real-time communication using WebSockets
 - MongoDB-based storage for conversations and messages
-- Message read status tracking and typing indicators
-- Conversation management with user presence status
+- Message read status tracking
+- Conversation management with user profiles
 
 ### **Automatic Cover Letter Generation**
 - AI-based cover letter creation tailored to each job description, incorporating details from the user's profile and resume.

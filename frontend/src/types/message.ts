@@ -5,6 +5,8 @@ export interface User {
   company?: string;
   avatar?: string;
   type: 'recruiter' | 'applicant';
+  skills?: string[];
+  experience?: string;
 }
 
 export interface Message {

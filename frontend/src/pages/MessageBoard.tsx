@@ -21,7 +21,7 @@ const MessageBoardContainer = styled(Box)(({ theme }) => ({
   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
 }));
 
-// Sample data (would normally come from the API)
+// Sample users for demo purposes
 const SAMPLE_USERS: User[] = [
   {
     id: 1,
@@ -39,92 +39,134 @@ const SAMPLE_USERS: User[] = [
     type: 'recruiter',
     avatar: 'https://randomuser.me/api/portraits/men/44.jpg'
   },
-];
-
-const SAMPLE_CONVERSATIONS = [
   {
-    id: '1',
-    user: SAMPLE_USERS[0],
-  },
-  {
-    id: '2',
-    user: SAMPLE_USERS[1],
-  },
-];
-
-const SAMPLE_MESSAGES: Message[] = [
-  {
-    id: '1',
-    content: 'Hey Jake, I wanted to reach out because we saw your work contributions and were impressed by your work.',
-    senderId: 1,
-    senderType: 'recruiter',
-    timestamp: new Date(Date.now() - 45 * 60000).toISOString(),
-    read: true,
-  },
-  {
-    id: '2',
-    content: 'We want to invite you for a quick interview',
-    senderId: 1,
-    senderType: 'recruiter',
-    timestamp: new Date(Date.now() - 42 * 60000).toISOString(),
-    read: true,
-  },
-  {
-    id: '3',
-    content: 'Hi Jan, sure I would love to. Thanks for taking the time to see my work!',
-    senderId: 4,
-    senderType: 'applicant',
-    timestamp: new Date(Date.now() - 20 * 60000).toISOString(),
-    read: true,
+    id: 3,
+    name: 'Sarah Smith',
+    title: 'Recruiter',
+    company: 'Innovate Inc',
+    type: 'recruiter',
+    avatar: 'https://randomuser.me/api/portraits/women/28.jpg'
   },
 ];
 
 const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
-  const [conversations, setConversations] = useState(SAMPLE_CONVERSATIONS);
-  const [messages, setMessages] = useState<Message[]>(SAMPLE_MESSAGES);
+  const [conversations, setConversations] = useState<{id: string, user: User}[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Would normally fetch conversations from API
+  // Fetch conversations when component mounts
   useEffect(() => {
-    // In a real app, this would be:
-    // messageService.getConversations(currentUser.id)
-    //   .then(data => setConversations(data))
-  }, [currentUser.id]);
+    const fetchConversations = async () => {
+      setIsLoading(true);
+      try {
+        const data = await messageService.getConversations(currentUser.id);
+        
+        // Format conversations for the UI
+        const formattedConversations = data.map(conv => {
+          // Find the other participant (not the current user)
+          const otherParticipant = conv.participants.find(p => p.id !== currentUser.id);
+          return {
+            id: conv.id,
+            user: otherParticipant || { 
+              id: 0, 
+              name: "Unknown User", 
+              type: "recruiter" as const, 
+              avatar: "" 
+            }
+          };
+        });
+        
+        setConversations(formattedConversations);
+        
+        // Auto-select the first conversation if none is selected
+        if (!selectedConversationId && formattedConversations.length > 0) {
+          setSelectedConversationId(formattedConversations[0].id);
+        }
+      } catch (err) {
+        console.error('Error fetching conversations:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  // Would normally fetch messages when a conversation is selected
+    fetchConversations();
+
+    // Periodically refresh conversations
+    const intervalId = setInterval(fetchConversations, 15000);
+    
+    return () => clearInterval(intervalId);
+  }, [currentUser.id, selectedConversationId]);
+
+  // Fetch messages when conversation is selected
   useEffect(() => {
-    if (selectedConversationId) {
-      // In a real app, this would be:
-      // messageService.getConversationMessages(selectedConversationId)
-      //   .then(data => setMessages(data))
-    }
+    if (!selectedConversationId) return;
+    
+    const fetchMessages = async () => {
+      setIsLoading(true);
+      try {
+        const data = await messageService.getConversationMessages(selectedConversationId);
+        setMessages(data);
+      } catch (err) {
+        console.error('Error fetching messages:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMessages();
+
+    // Periodically refresh messages for the selected conversation
+    const intervalId = setInterval(fetchMessages, 5000);
+    
+    return () => clearInterval(intervalId);
   }, [selectedConversationId]);
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
   };
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     if (!selectedConversationId) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      content,
-      senderId: currentUser.id,
-      senderType: currentUser.type,
-      timestamp: new Date().toISOString(),
-      read: false,
-    };
+    try {
+      const response = await messageService.sendMessage(
+        content,
+        currentUser.id,
+        currentUser.type,
+        selectedConversationId
+      );
+      
+      if (response) {
+        // Immediately update the UI with the new message
+        setMessages(prevMessages => {
+          if (!prevMessages.some(msg => msg.id === response.id)) {
+            return [...prevMessages, response];
+          }
+          return prevMessages;
+        });
+      }
+    } catch (err) {
+      console.error('Error sending message:', err);
+    }
+  };
 
-    setMessages([...messages, newMessage]);
-
-    // In a real app, this would be:
-    // messageService.sendMessage(
-    //   content,
-    //   currentUser.id,
-    //   currentUser.type,
-    //   selectedConversationId
-    // )
+  // Get participants for active conversation
+  const getActiveConversationParticipants = () => {
+    if (!selectedConversationId) return [];
+    
+    const conversation = conversations.find(c => c.id === selectedConversationId);
+    if (!conversation) return [];
+    
+    return [
+      conversation.user,
+      {
+        id: currentUser.id,
+        name: currentUser.name,
+        type: currentUser.type,
+        avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
+      }
+    ];
   };
 
   // Get active conversation with all needed data
@@ -133,21 +175,27 @@ const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
         id: selectedConversationId,
         title: 'Conversation',
         messages: messages,
-        participants: [
-          selectedConversationId === '1' ? SAMPLE_USERS[0] : SAMPLE_USERS[1],
-          {
-            id: currentUser.id,
-            name: currentUser.name,
-            type: currentUser.type,
-            avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
-          }
-        ],
+        participants: getActiveConversationParticipants(),
         startedAt: new Date(Date.now() - 60 * 60000).toISOString(),
       }
     : null;
 
   return (
     <MessageBoardContainer>
+      {isLoading && !conversations.length && (
+        <Box 
+          sx={{ 
+            position: 'absolute', 
+            top: '50%', 
+            left: '50%', 
+            transform: 'translate(-50%, -50%)',
+            textAlign: 'center'
+          }}
+        >
+          <Typography>Loading conversations...</Typography>
+        </Box>
+      )}
+      
       <ConversationList
         conversations={conversations}
         selectedConversationId={selectedConversationId}

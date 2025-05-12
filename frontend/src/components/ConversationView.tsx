@@ -23,6 +23,16 @@ const ConversationViewContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: theme.palette.background.default,
+  height: '100%',
+  overflow: 'hidden',
+}));
+
+const ConversationHeader = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.background.paper,
+  display: 'flex',
+  alignItems: 'center',
 }));
 
 const EmptyStateContainer = styled(Box)(({ theme }) => ({
@@ -49,14 +59,31 @@ const ConversationView: React.FC<ConversationViewProps> = ({
     );
   }
 
+  // Find the other participant (not the current user)
+  const otherParticipant = conversation.participants.find(p => p.id !== currentUserId);
+
   return (
     <ConversationViewContainer>
-      <MessageList
-        messages={conversation.messages}
-        participants={conversation.participants}
-        currentUserId={currentUserId}
-      />
-      <MessageInput onSendMessage={onSendMessage} />
+      {otherParticipant && (
+        <ConversationHeader>
+          <Typography variant="h6">
+            {otherParticipant.name}
+          </Typography>
+          {otherParticipant.title && (
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+              {otherParticipant.title} {otherParticipant.company ? `at ${otherParticipant.company}` : ''}
+            </Typography>
+          )}
+        </ConversationHeader>
+      )}
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 60px)', overflow: 'hidden' }}>
+        <MessageList
+          messages={conversation.messages}
+          participants={conversation.participants}
+          currentUserId={currentUserId}
+        />
+        <MessageInput onSendMessage={onSendMessage} />
+      </Box>
     </ConversationViewContainer>
   );
 };

@@ -2,13 +2,23 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .content {
   flex: 1;
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
   background-color: #f5f5f5;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Message board container needs to take full height */
+.content > div {
+  height: 100%;
+  overflow: hidden;
 }
 
 .App-logo {

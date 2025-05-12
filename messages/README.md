@@ -1,18 +1,15 @@
 # AutoCareers Messaging System
 
-A real-time messaging platform that enables communication between recruiters and applicants, built with FastAPI and MongoDB.
+A messaging platform that enables communication between recruiters and applicants, built with FastAPI and MongoDB.
 
 ## Features
 
 - MongoDB-based database for scalable data storage
-- Real-time messaging using WebSockets
 - Conversation management
 - Message read status tracking
-- Typing indicators
-- User presence status
-- Unread message counts
-- Message history with pagination
 - Separate user types (recruiters and applicants)
+- Message history with pagination
+- Unread message counts
 
 ## Setup & Running
 
@@ -48,9 +45,6 @@ A real-time messaging platform that enables communication between recruiters and
 - **Users**
   - `GET /api/users/{user_id}/conversations` - Get all conversations for a user
   - `GET /api/users/{user_id}/unread` - Get unread message counts
-
-- **WebSockets**
-  - `WebSocket /api/ws/{user_id}` - WebSocket connection for real-time updates
 
 ## Integration
 
