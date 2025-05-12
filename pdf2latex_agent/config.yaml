@@ -1,5 +1,5 @@
 openai_api_key: 
-TOGETHER_API_KEY: 
+TOGETHER_API_KEY: ""
 use_together: true  # If true, we call Together. If false, we call OpenAI.
 
 agents:

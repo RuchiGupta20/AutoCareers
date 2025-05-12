@@ -1,7 +1,11 @@
 import React from 'react';
 import './App.css';
 import Navbar from './components/NavBar';
-import MessageBoard from './components/messaging/MessageBoard';
+import FilterSearchBar from './components/FilterBar'
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ApplicantsList from "./pages/ApplicantsList";
+import ATSScore from "./pages/ATSScore";
+import CoverLetterPage from './pages/CoverLetter';
 
 function App() {
   // Sample current user
@@ -14,9 +18,14 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <div className="content">
-        <MessageBoard currentUser={currentUser} />
-      </div>
+      <Router>
+      <Routes>
+        <Route path="/applicants" element={<ApplicantsList />} />
+        <Route path="/ats-score" element={<ATSScore />} />
+        <Route path='/generate-cover-letter' element={<CoverLetterPage />} />
+      </Routes>
+    </Router>
+      
     </div>
   );
 }
