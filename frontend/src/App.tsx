@@ -4,7 +4,9 @@ import './App.css';
 import Navbar from './components/NavBar';
 import FilterSearchBar from './components/FilterBar'
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ApplicantsList from "./pages/ApplicantsList"; // Adjust the path as needed
+import ApplicantsList from "./pages/ApplicantsList";
+import ATSScore from "./pages/ATSScore";
+import CoverLetterPage from './pages/CoverLetter';
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Router>
       <Routes>
         <Route path="/applicants" element={<ApplicantsList />} />
+        <Route path="/ats-score" element={<ATSScore />} />
+        <Route path='/generate-cover-letter' element={<CoverLetterPage />} />
       </Routes>
     </Router>
       
