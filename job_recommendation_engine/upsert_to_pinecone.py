@@ -2,7 +2,7 @@
 import time
 from DB_Connectors.db_connection import fetch_jobs_from_mongo, get_pinecone_index
 
-def chunker(seq, batch_size=96):
+def chunker(seq, batch_size=64):
     for i in range(0, len(seq), batch_size):
         yield seq[i : i + batch_size]
 
@@ -36,7 +36,8 @@ def upsert_jobs_to_pinecone():
             "text": description,      # for integrated embeddings
             "company": job.get("company", ""),
             "role": job.get("role", ""),
-            "location": job.get("location", "")
+            "location": job.get("location", ""),
+            "apply_link": job.get("apply_link", ""),
         }
         records.append(record)
 
@@ -45,7 +46,7 @@ def upsert_jobs_to_pinecone():
     index = get_pinecone_index(index_name="resumeembeddings", dimension=2048)
 
     batch_count = 0
-    for batch in chunker(records, batch_size=96):
+    for batch in chunker(records, batch_size=64):
         batch_count += 1
         print(f"Upserting batch {batch_count} with {len(batch)} records...")
         index.upsert_records(namespace="job-listings", records=batch)

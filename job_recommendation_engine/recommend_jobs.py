@@ -22,7 +22,7 @@ def recommend_jobs_from_resume(resume_text: str, top_k: int = 5):
             "inputs": {"text": resume_text},
             "top_k": top_k
         },
-        fields=["company", "role", "location", "text"]
+       fields=["company", "role", "location", "text", "apply_link"]
     )
 
     # The result is structured as a dict with search_response["result"]["hits"]
@@ -41,9 +41,10 @@ def recommend_jobs_from_resume(resume_text: str, top_k: int = 5):
             "company": fields.get("company", ""),
             "role": fields.get("role", ""),
             "location": fields.get("location", ""),
+            "apply_link": fields.get("apply_link", ""), 
             "similarity_score": score,
             # 'text' is the job description if you want to see it:
-            # "description": fields.get("text", "")
+             "description": fields.get("text", "")
         }
         recommendations.append(recommendation)
 
@@ -68,8 +69,9 @@ def main():
 
     print("Job Recommendations based on your resume:\n")
     for i, job in enumerate(recs, start=1):
-        print(f"{i}. {job['company']} - {job['role']} ({job['location']})")
+        print(f"{i}. {job['company']} - {job['role']} ({job['location']}) ({job['apply_link']})")
         print(f"   Similarity score: {job['similarity_score']:.4f}")
+        print(f"")
         print("   ----------------------------")
 
 if __name__ == "__main__":
