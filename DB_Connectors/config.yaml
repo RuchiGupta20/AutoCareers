@@ -1,9 +1,10 @@
+use_mongo: true 
+
 MongoDB:
-  # For local development using MongoDB running locally
-  MONGO_URI: "mongodb://localhost:27017/"
+    MONGO_URI: "URL"
 
 Pinecone:
-  API_KEY: "YOUR_PINECONE_API_KEY"
-  ENVIRONMENT: "YOUR_PINECONE_ENVIRONMENT"
-  CLOUD: "aws"
-  REGION: "us-west1" 
+  API_KEY: "API_KEY"
+  ENVIRONMENT: "preview"   # or "production" etc. (whatever your account needs)
+  CLOUD: "aws"             # or "gcp" / "azure"
+  REGION: "us-west1"       # or your actual region, e.g. "us-east1", "us-central1"
