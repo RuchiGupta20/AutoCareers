@@ -7,7 +7,8 @@ import "./App.css";
 import Navbar from "./components/NavBar";
 import FilterSearchBar from "./components/FilterBar";
 import Recommendations from "./pages/Recommendations";
-
+import Login from "./pages/Login"; 
+import Register from "./pages/Register"; 
 function Home() {
   return (
     <header className="App-header">
@@ -23,19 +24,15 @@ function Home() {
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-
-      {/* Here’s where we mount our routes */}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/recommendations"
-          element={<Recommendations />}
-        />
-        {/* You can add more routes here, e.g. <Route path="/search" element={<FilterSearchBar/>} /> */}
+        <Route path="/Recommendations" element={<Recommendations />} />
+        <Route path="/login" element={<Login />} />   {/* ← new route */}
+        {/* add /signup and /forgot-password later if you like */}
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;
