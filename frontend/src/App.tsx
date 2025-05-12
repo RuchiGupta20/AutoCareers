@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Navbar from './components/NavBar';
-import MessageBoard from './components/messaging/MessageBoard';
+import MessageBoard from './pages/MessageBoard';
 
 function App() {
   // Sample current user

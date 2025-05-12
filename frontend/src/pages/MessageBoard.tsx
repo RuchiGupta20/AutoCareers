@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, styled } from '@mui/material';
-import ConversationList from './ConversationList';
-import ConversationView from './ConversationView';
-import { User, Message } from '../../types/message';
-import * as messageService from '../../services/messageService';
+import ConversationList from '../components/ConversationList';
+import ConversationView from '../components/ConversationView';
+import { User, Message } from '../types/message';
+import * as messageService from '../services/messageService';
 
 interface MessageBoardProps {
   currentUser: {
@@ -15,13 +15,10 @@ interface MessageBoardProps {
 
 const MessageBoardContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  height: 'calc(100vh - 80px)', // Account for navbar and padding
+  height: 'calc(100vh - 64px)', // Adjust based on your nav height
   backgroundColor: '#fff',
   borderRadius: '4px',
   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  position: 'sticky',
-  top: '80px', // Stick right below the navbar
-  overflow: 'hidden', // Prevent scrollbars on the container itself
 }));
 
 // Sample data (would normally come from the API)
@@ -42,20 +39,6 @@ const SAMPLE_USERS: User[] = [
     type: 'recruiter',
     avatar: 'https://randomuser.me/api/portraits/men/44.jpg'
   },
-  {
-    id: 3,
-    name: 'Jane Smith',
-    title: 'Applicant',
-    type: 'applicant',
-    avatar: 'https://randomuser.me/api/portraits/women/33.jpg'
-  },
-  {
-    id: 4,
-    name: 'Current User',
-    title: 'Developer',
-    type: 'applicant',
-    avatar: 'https://randomuser.me/api/portraits/men/77.jpg'
-  }
 ];
 
 const SAMPLE_CONVERSATIONS = [
@@ -69,8 +52,7 @@ const SAMPLE_CONVERSATIONS = [
   },
 ];
 
-// Jan Mayer conversation messages
-const JAN_MESSAGES: Message[] = [
+const SAMPLE_MESSAGES: Message[] = [
   {
     id: '1',
     content: 'Hey Jake, I wanted to reach out because we saw your work contributions and were impressed by your work.',
@@ -97,53 +79,24 @@ const JAN_MESSAGES: Message[] = [
   },
 ];
 
-// John Doe conversation messages
-const JOHN_MESSAGES: Message[] = [
-  {
-    id: '4',
-    content: 'Hello! I noticed your profile and thought you would be a great fit for a position we have at TechCorp.',
-    senderId: 2,
-    senderType: 'recruiter',
-    timestamp: new Date(Date.now() - 120 * 60000).toISOString(),
-    read: true,
-  },
-  {
-    id: '5',
-    content: 'The role is for a Senior Frontend Developer with React expertise. Would you be interested in discussing this opportunity?',
-    senderId: 2,
-    senderType: 'recruiter',
-    timestamp: new Date(Date.now() - 115 * 60000).toISOString(),
-    read: true,
-  },
-  {
-    id: '6',
-    content: "Hi John, I'd definitely be interested in learning more about the position. Could you share more details about the responsibilities and requirements?",
-    senderId: 4,
-    senderType: 'applicant',
-    timestamp: new Date(Date.now() - 90 * 60000).toISOString(),
-    read: true,
-  },
-  {
-    id: '7',
-    content: 'Great! The role involves leading our frontend team, architecting new features, and mentoring junior developers. We use React, TypeScript, and Material UI. When would be a good time for a call?',
-    senderId: 2,
-    senderType: 'recruiter',
-    timestamp: new Date(Date.now() - 60 * 60000).toISOString(),
-    read: true,
-  },
-];
-
 const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [conversations, setConversations] = useState(SAMPLE_CONVERSATIONS);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(SAMPLE_MESSAGES);
 
-  // Set default messages based on the selected conversation
+  // Would normally fetch conversations from API
   useEffect(() => {
-    if (selectedConversationId === '1') {
-      setMessages(JAN_MESSAGES);
-    } else if (selectedConversationId === '2') {
-      setMessages(JOHN_MESSAGES);
+    // In a real app, this would be:
+    // messageService.getConversations(currentUser.id)
+    //   .then(data => setConversations(data))
+  }, [currentUser.id]);
+
+  // Would normally fetch messages when a conversation is selected
+  useEffect(() => {
+    if (selectedConversationId) {
+      // In a real app, this would be:
+      // messageService.getConversationMessages(selectedConversationId)
+      //   .then(data => setMessages(data))
     }
   }, [selectedConversationId]);
 
@@ -180,25 +133,15 @@ const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
         id: selectedConversationId,
         title: 'Conversation',
         messages: messages,
-        participants: selectedConversationId === '1' 
-          ? [
-              SAMPLE_USERS[0], // Jan Mayer
-              {
-                id: currentUser.id,
-                name: currentUser.name,
-                type: currentUser.type,
-                avatar: SAMPLE_USERS[3].avatar, // Using sample avatar
-              }
-            ]
-          : [
-              SAMPLE_USERS[1], // John Doe
-              {
-                id: currentUser.id,
-                name: currentUser.name,
-                type: currentUser.type,
-                avatar: SAMPLE_USERS[3].avatar, // Using sample avatar
-              }
-            ],
+        participants: [
+          selectedConversationId === '1' ? SAMPLE_USERS[0] : SAMPLE_USERS[1],
+          {
+            id: currentUser.id,
+            name: currentUser.name,
+            type: currentUser.type,
+            avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
+          }
+        ],
         startedAt: new Date(Date.now() - 60 * 60000).toISOString(),
       }
     : null;
