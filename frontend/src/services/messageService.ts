@@ -1,6 +1,9 @@
 import { Conversation, Message, User } from '../types/message';
 
-// Local test data - users
+/**
+ * Local test data - Sample users for the messaging system
+ * In a production environment, this would be fetched from a backend API
+ */
 const USERS: User[] = [
   {
     id: 1,
@@ -98,7 +101,10 @@ const USERS: User[] = [
   }
 ];
 
-// Local test data - conversations
+/**
+ * Local test data - Sample conversations between users
+ * In a production environment, these would be fetched from a backend API
+ */
 const CONVERSATIONS: Conversation[] = [
   {
     id: '1',
@@ -411,7 +417,16 @@ const CONVERSATIONS: Conversation[] = [
 // Keep track of message ID to ensure uniqueness
 let nextMessageId = 40;
 
-// Get all conversations for a user
+/**
+ * Retrieves all conversations for a specific user
+ * 
+ * @param userId - The ID of the user whose conversations to retrieve
+ * @returns Promise resolving to an array of conversations
+ * 
+ * @remarks
+ * This is a mock implementation that simulates an API call.
+ * In a production environment, this would make a real API request to the backend.
+ */
 export const getConversations = async (userId: number): Promise<Conversation[]> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500));
@@ -422,7 +437,16 @@ export const getConversations = async (userId: number): Promise<Conversation[]> 
   );
 };
 
-// Get messages for a conversation
+/**
+ * Retrieves all messages for a specific conversation
+ * 
+ * @param conversationId - The ID of the conversation to get messages for
+ * @returns Promise resolving to an array of messages
+ * 
+ * @remarks
+ * This is a mock implementation that simulates an API call.
+ * In a production environment, this would make a real API request to the backend.
+ */
 export const getConversationMessages = async (conversationId: string): Promise<Message[]> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 300));
@@ -437,7 +461,19 @@ export const getConversationMessages = async (conversationId: string): Promise<M
   return conversation.messages;
 };
 
-// Send a message
+/**
+ * Sends a new message in a conversation
+ * 
+ * @param content - The text content of the message
+ * @param senderId - The ID of the user sending the message
+ * @param senderType - The type of user sending the message (recruiter or applicant)
+ * @param conversationId - The ID of the conversation to send the message in
+ * @returns Promise resolving to the created message or null if conversation not found
+ * 
+ * @remarks
+ * This is a mock implementation that simulates an API call.
+ * In a production environment, this would make a real API request to the backend.
+ */
 export const sendMessage = async (
   content: string,
   senderId: number,
@@ -472,7 +508,16 @@ export const sendMessage = async (
   return newMessage;
 };
 
-// Mark message as read
+/**
+ * Marks a message as read
+ * 
+ * @param messageId - The ID of the message to mark as read
+ * @returns Promise resolving to a boolean indicating success or failure
+ * 
+ * @remarks
+ * This is a mock implementation that simulates an API call.
+ * In a production environment, this would make a real API request to the backend.
+ */
 export const markMessageAsRead = async (messageId: string): Promise<boolean> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 200));
@@ -490,7 +535,18 @@ export const markMessageAsRead = async (messageId: string): Promise<boolean> => 
   return false;
 };
 
-// Create a new conversation
+/**
+ * Creates a new conversation between users
+ * 
+ * @param title - Optional title for the conversation
+ * @param participantIds - Array of user IDs who will participate in the conversation
+ * @param participantTypes - Array of user types corresponding to the participant IDs
+ * @returns Promise resolving to the created conversation or null if creation failed
+ * 
+ * @remarks
+ * This is a mock implementation that simulates an API call.
+ * In a production environment, this would make a real API request to the backend.
+ */
 export const createConversation = async (
   title: string,
   participantIds: number[],

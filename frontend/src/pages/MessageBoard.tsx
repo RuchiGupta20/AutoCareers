@@ -5,14 +5,24 @@ import ConversationView from '../components/ConversationView';
 import { User, Message } from '../types/message';
 import * as messageService from '../services/messageService';
 
+/**
+ * Props for the MessageBoard component
+ */
 interface MessageBoardProps {
+  /** The current user viewing the message board */
   currentUser: {
+    /** User's unique identifier */
     id: number;
+    /** User's display name */
     name: string;
+    /** User's role type */
     type: 'recruiter' | 'applicant';
   };
 }
 
+/**
+ * Styled container for the message board layout
+ */
 const MessageBoardContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   height: 'calc(100vh - 64px)', // Adjust based on your nav height
@@ -49,13 +59,29 @@ const SAMPLE_USERS: User[] = [
   },
 ];
 
+/**
+ * MessageBoard Component for Applicant View
+ * 
+ * Displays a list of conversations on the left side and the selected conversation on the right.
+ * Handles fetching, displaying, and sending messages for applicant users.
+ * 
+ * @param props - Component props
+ * @returns React component
+ */
 const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
+  // Selected conversation state
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  // Conversations list state
   const [conversations, setConversations] = useState<{id: string, user: User}[]>([]);
+  // Messages in the current conversation
   const [messages, setMessages] = useState<Message[]>([]);
+  // Loading state for API calls
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Fetch conversations when component mounts
+  /**
+   * Fetch user conversations when component mounts
+   * Sets up auto-refresh every 15 seconds
+   */
   useEffect(() => {
     const fetchConversations = async () => {
       setIsLoading(true);
@@ -98,7 +124,10 @@ const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
     return () => clearInterval(intervalId);
   }, [currentUser.id, selectedConversationId]);
 
-  // Fetch messages when conversation is selected
+  /**
+   * Fetch messages for the selected conversation
+   * Sets up auto-refresh every 5 seconds
+   */
   useEffect(() => {
     if (!selectedConversationId) return;
     
@@ -122,10 +151,20 @@ const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
     return () => clearInterval(intervalId);
   }, [selectedConversationId]);
 
+  /**
+   * Handle conversation selection
+   * 
+   * @param conversationId - ID of the conversation to select
+   */
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
   };
 
+  /**
+   * Send a new message in the current conversation
+   * 
+   * @param content - Text content of the message to send
+   */
   const handleSendMessage = async (content: string) => {
     if (!selectedConversationId) return;
 
@@ -151,7 +190,11 @@ const MessageBoard: React.FC<MessageBoardProps> = ({ currentUser }) => {
     }
   };
 
-  // Get participants for active conversation
+  /**
+   * Get participants for the active conversation
+   * 
+   * @returns Array of users in the active conversation
+   */
   const getActiveConversationParticipants = () => {
     if (!selectedConversationId) return [];
     
