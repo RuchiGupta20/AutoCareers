@@ -1,0 +1,10 @@
+use_mongo: true 
+
+MongoDB:
+    MONGO_URI: "URL"
+
+Pinecone:
+  API_KEY: "API_KEY"
+  ENVIRONMENT: "preview"   # or "production" etc. (whatever your account needs)
+  CLOUD: "aws"             # or "gcp" / "azure"
+  REGION: "us-west1"       # or your actual region, e.g. "us-east1", "us-central1"

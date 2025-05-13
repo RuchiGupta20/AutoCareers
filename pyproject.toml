@@ -7,7 +7,8 @@ packages = [
   { include = "pdf2latex_agent" },
   { include = "job_recommendation_engine" },
   { include = "DB_Connectors" },
-   { include = "common" }
+  { include = "common" },
+  { include = "messages" }
 ]
 
 [tool.poetry.dependencies]
@@ -17,12 +18,15 @@ together = "^1.4.6"
 PyYAML = "^6.0"
 pypdf = "^5.1.0"  
 llama-index-llms-together = "^0.3.1"
+python-multipart = "^0.0.9"
+fastapi = { version = "^0.115.0", extras = ["all"] }
 
 pymongo = {extras = ["srv"], version = "^4.11.3"}
 pinecone = "^6.0.2"
-fastapi = "^0.115.11"
 uvicorn = "^0.34.0"
 selenium = "^4.30.0"
+certifi = "^2025.4.26"
+dnspython = "^2.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
@@ -33,6 +37,9 @@ job-scraper = "job_recommendation_engine.push_to_mongodb:main"
 DB-connect= "DB_Connectors.db_connection:main"
 mongo-to-pinecone = "job_recommendation_engine.upsert_to_pinecone:main"
 recommend-jobs = "job_recommendation_engine.recommend_jobs:main"
+
+[tool.poetry.group.dev.dependencies]
+mongomock = "^4.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.5.0"]
