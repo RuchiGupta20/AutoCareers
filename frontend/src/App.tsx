@@ -1,40 +1,43 @@
 // src/App.tsx
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import logo from "./logo.svg";
+import React, { useState } from "react";
 import "./App.css";
-
 import Navbar from "./components/NavBar";
-import FilterSearchBar from "./components/FilterBar";
-import Recommendations from "./pages/Recommendations";
-
-function Home() {
-  return (
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Welcome to AutoCareers! Navigate to <code>/recommendations</code> to see
-        personalized job matches.
-      </p>
-    </header>
-  );
-}
+import MessageBoard from './pages/MessageBoard';
+import RecruiterMessageBoard from './pages/RecruiterMessageBoard';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Navbar />
+  const [viewMode, setViewMode] = useState<'applicant' | 'recruiter'>('applicant');
 
-      {/* Here’s where we mount our routes */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/recommendations"
-          element={<Recommendations />}
-        />
-        {/* You can add more routes here, e.g. <Route path="/search" element={<FilterSearchBar/>} /> */}
-      </Routes>
-    </BrowserRouter>
+  // Sample applicant user
+  const applicantUser = {
+    id: 4, // This would be fetched from authentication system
+    name: 'You (Applicant)',
+    type: 'applicant' as const,
+  };
+
+  // Sample recruiter user
+  const recruiterUser = {
+    id: 5, // Different ID for the recruiter
+    name: 'You (Recruiter)',
+    type: 'recruiter' as const,
+  };
+
+  // Handler for profile switching from NavBar
+  const handleSwitchProfile = (mode: 'applicant' | 'recruiter') => {
+    setViewMode(mode);
+  };
+
+  return (
+    <div className="App">
+      <Navbar viewMode={viewMode} onSwitchProfile={handleSwitchProfile} />
+      <div className="content">
+        {viewMode === 'applicant' ? (
+          <MessageBoard currentUser={applicantUser} />
+        ) : (
+          <RecruiterMessageBoard currentUser={recruiterUser} />
+        )}
+      </div>
+    </div>
   );
 }
 
